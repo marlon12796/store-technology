@@ -14,7 +14,7 @@ lerna-debug.log*
 
 # OS
 .DS_Store
-
+store-tech/
 # Tests
 /coverage
 /.nyc_output
