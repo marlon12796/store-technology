@@ -1,5 +1,7 @@
+import { relations } from 'drizzle-orm';
 import { mysqlTable } from 'drizzle-orm/mysql-core';
 import * as t from 'drizzle-orm/mysql-core';
+import { detallesVenta } from './detallesVenta.schema';
 
 export const products = mysqlTable('productos', {
   codigo: t.varchar({ length: 55 }).notNull().primaryKey(),
@@ -20,3 +22,6 @@ export const products = mysqlTable('productos', {
     'otro',
   ]),
 });
+export const productsRelations = relations(products, ({ many }) => ({
+  detallesVenta: many(detallesVenta),
+}));
