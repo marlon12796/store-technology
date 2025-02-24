@@ -9,6 +9,7 @@ async function bootstrap() {
       whitelist: true,
       always: true,
       forbidNonWhitelisted: true,
+      transform: true,
     }),
   );
   const port = process.env.PORT ?? 3000;

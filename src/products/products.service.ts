@@ -15,18 +15,24 @@ import { eq } from 'drizzle-orm';
 export class ProductsService {
   constructor(@Inject(DRIZZLE) private db: DrizzleDB) {}
   async create(createProductDto: CreateProductDto) {
-    const [createdProduct] = await this.db
-      .insert(products)
-      .values(df<ProductsModel>(createProductDto))
-      .$returningId();
-    if (!createdProduct)
-      throw new BadRequestException('Error al crear el producto');
-
-    return createProductDto;
+    try {
+      await this.db
+        .insert(products)
+        .values(df<ProductsModel>(createProductDto))
+        .$returningId();
+      return createProductDto;
+    } catch {
+      throw new BadRequestException(
+        `Error al crear el producto con codigo #${createProductDto.codigo}`,
+      );
+    }
   }
 
   async findAll() {
-    const totalProducts = await this.db.select().from(products);
+    const totalProducts = await this.db
+      .select()
+      .from(products)
+      .where(eq(products.activo, true));
     return totalProducts;
   }
 
@@ -36,6 +42,10 @@ export class ProductsService {
       .from(products)
       .where(eq(products.codigo, id));
     if (!product) throw new NotFoundException(`Product #${id} not found`);
+    if (!product.activo)
+      return {
+        message: `El producto con código ${id} está eliminado.`,
+      };
     return product;
   }
 

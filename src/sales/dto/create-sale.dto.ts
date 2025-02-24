@@ -9,7 +9,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { DetallesVentaDTO } from './details-sale.dto';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 
 export class CreateSaleDto {
   @IsString({ message: 'El código de venta debe ser un string' })
@@ -32,23 +32,17 @@ export class CreateSaleDto {
   cliente: string;
   @IsNumber({}, { message: 'El subtotal debe ser un número válido' })
   @Min(0.01, { message: 'El subtotal debe ser mayor que 0' })
-  @Matches(/^\d+(\.\d{1,2})?$/, {
-    message: 'El subtotal debe tener máximo 2 decimales',
-  })
+  @Transform(({ value }) => Number(parseFloat(value).toFixed(2)))
   subtotal: number;
 
   @IsNumber({}, { message: 'El IGV debe ser un número válido' })
   @Min(0.01, { message: 'El IGV debe ser mayor que 0' })
-  @Matches(/^\d+(\.\d{1,2})?$/, {
-    message: 'El IGV debe tener máximo 2 decimales',
-  })
+  @Transform(({ value }) => Number(parseFloat(value).toFixed(2)))
   igv: number;
 
   @IsNumber({}, { message: 'El total debe ser un número válido' })
   @Min(0.01, { message: 'El total debe ser mayor que 0' })
-  @Matches(/^\d+(\.\d{1,2})?$/, {
-    message: 'El total debe tener máximo 2 decimales',
-  })
+  @Transform(({ value }) => Number(parseFloat(value).toFixed(2)))
   total: number;
 
   @IsArray()

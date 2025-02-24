@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import {
   IsInt,
   IsPositive,
@@ -5,7 +6,6 @@ import {
   Min,
   MaxLength,
   IsNumber,
-  Matches,
 } from 'class-validator';
 
 export class DetallesVentaDTO {
@@ -27,9 +27,7 @@ export class DetallesVentaDTO {
 
   @IsNumber({}, { message: 'El precio debe ser un número válido' })
   @Min(0.01, { message: 'El precio debe ser mayor que 0' })
-  @Matches(/^\d+(\.\d{1,2})?$/, {
-    message: 'El precio debe tener máximo 2 decimales',
-  })
+  @Transform(({ value }) => Number(parseFloat(value).toFixed(2)))
   precio: number;
 
   @IsInt({ message: 'El descuento debe ser un número entero' })
