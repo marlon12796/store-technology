@@ -1,5 +1,11 @@
 import { relations, sql } from 'drizzle-orm';
-import { mysqlTable, varchar, decimal, date } from 'drizzle-orm/mysql-core';
+import {
+  mysqlTable,
+  varchar,
+  decimal,
+  date,
+  boolean,
+} from 'drizzle-orm/mysql-core';
 import { detallesVenta } from './detallesVenta.schema';
 
 export const ventas = mysqlTable('ventas', {
@@ -12,6 +18,7 @@ export const ventas = mysqlTable('ventas', {
   subtotal: decimal('subtotal', { precision: 10, scale: 2 }).notNull(),
   igv: decimal('igv', { precision: 10, scale: 2 }).notNull(),
   total: decimal('total', { precision: 10, scale: 2 }).notNull(),
+  eliminado: boolean('eliminado').default(false).notNull(),
 });
 export const ventasRelations = relations(ventas, ({ many }) => ({
   detallesVenta: many(detallesVenta),
