@@ -1,6 +1,6 @@
 services:
   db:
-    image: mysql:latest
+    image: mysql:9.2.0-oracle
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -26,6 +26,7 @@ services:
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       PORT: ${PORT}
+      IP_LIST: ${IP_LIST}
     ports:
       - ${PORT}:${PORT}
     volumes:

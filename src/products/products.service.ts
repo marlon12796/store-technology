@@ -14,16 +14,20 @@ import { eq } from 'drizzle-orm';
 @Injectable()
 export class ProductsService {
   constructor(@Inject(DRIZZLE) private db: DrizzleDB) {}
+
   async create(createProductDto: CreateProductDto) {
     try {
       await this.db
         .insert(products)
         .values(df<ProductsModel>(createProductDto))
         .$returningId();
-      return createProductDto;
+      return {
+        success: true,
+        data: createProductDto,
+      };
     } catch {
       throw new BadRequestException(
-        `Error al crear el producto con codigo #${createProductDto.codigo}`,
+        `Error al crear el producto con código #${createProductDto.codigo}`,
       );
     }
   }
@@ -33,7 +37,10 @@ export class ProductsService {
       .select()
       .from(products)
       .where(eq(products.activo, true));
-    return totalProducts;
+    return {
+      success: true,
+      data: totalProducts,
+    };
   }
 
   async findOne(id: string) {
@@ -41,12 +48,17 @@ export class ProductsService {
       .select()
       .from(products)
       .where(eq(products.codigo, id));
-    if (!product) throw new NotFoundException(`Product #${id} not found`);
+    if (!product)
+      throw new NotFoundException(`Producto con código #${id} no encontrado`);
     if (!product.activo)
       return {
+        success: false,
         message: `El producto con código ${id} está eliminado.`,
       };
-    return product;
+    return {
+      success: true,
+      data: product,
+    };
   }
 
   async update(id: string, updateProductDto: UpdateProductDto) {
@@ -58,7 +70,10 @@ export class ProductsService {
     if (!existingProduct)
       throw new NotFoundException(`Producto con código ${id} no encontrado`);
 
-    return updateProductDto;
+    return {
+      success: true,
+      data: updateProductDto,
+    };
   }
 
   async remove(id: string) {
@@ -66,6 +81,9 @@ export class ProductsService {
       .update(products)
       .set(df<ProductsModel>({ activo: false }))
       .where(eq(products.codigo, id));
-    return { message: `Product con id : #${id} eliminado con éxito` };
+    return {
+      success: true,
+      message: `Producto con código #${id} eliminado con éxito`,
+    };
   }
 }

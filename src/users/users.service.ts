@@ -22,10 +22,12 @@ export class UsersService {
           eq(Users.contrasena, loginUserDto.contrasena),
         ),
       );
+
     if (!user) throw new NotFoundException('Credenciales incorrectas');
 
-    return user;
+    return { success: true, data: user };
   }
+
   async create(createUserDto: CreateUserDto) {
     const [user] = await this.db
       .insert(Users)
@@ -35,7 +37,7 @@ export class UsersService {
     if (!user) {
       throw new BadRequestException('Error al crear el usuario');
     }
-    return createUserDto;
+    return { success: true, data: createUserDto };
   }
 
   findAll() {
